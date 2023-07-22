@@ -54,8 +54,8 @@ def phone_print(*data):
     result = address_book[contact]
     # print(f"birth {contact} - {get_birth}")
     # birth = Record.days_for_birthday()
-    
-    return f"Контакт: {result} and {birth}"
+    return f"Контакт: {result}"
+    # return f"Контакт: {result} до дня народження {birth}"
 
 
 @index_error
