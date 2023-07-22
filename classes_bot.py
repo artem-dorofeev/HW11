@@ -28,7 +28,7 @@ class Birthday(Field):
         self.__value = None
         self.value = value
         # self.time_birth = datetime.strptime(value, '%d.%m.%Y')
-        super().__init__(value)
+        # super().__init__(value)
 
     @property
     def value(self):
@@ -54,8 +54,8 @@ class Record:
         self.phones = []
         if phone:
             self.phones.append(phone)
-        if birthday:
-            self.birthday = birthday
+        # if birthday:
+        self.birthday = birthday
 
     def add_phone(self, phone: Phone):
         if phone.value not in [p.value for p in self.phones]:
@@ -70,10 +70,14 @@ class Record:
                 return f"старий номер {old_phone} змінено на {new_phone}"
         return f"{old_phone} відсутній в списку контакта {self.name}"
     
-    def days_for_birthday(self, birthday):
+    def add_birthday(self, birthday: Birthday):
+        self.birthday = birthday
+        return f"{birthday} add to {self.name}"
+    
+    def days_for_birthday(self):
         if not self.birthday:
             return f"not date birthday for {self.name}"
-        birth = datetime.strptime(self.birthday, '%d.%m.%Y')
+        birth = self.birthday.value
         current_date = datetime.now()
         next_birth = datetime(current_date.year, birth.month, birth.day)
         if next_birth < current_date:

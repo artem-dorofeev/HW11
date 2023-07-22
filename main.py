@@ -94,12 +94,23 @@ def show_all_command(*args):
 def get_birth(*args):
     name = Name(args[0].capitalize())
     print(args[0], args[1])
+    rec = address_book.get(str(name))
+    if rec:
+        birth = Birthday(args[1]) 
+        return rec.add_birthday(birth)
     # birh = Birthday(datetime.strptime(args[1], '%d.%m.%Y'))
-    birth = Birthday(args[1])
+    # birth = Birthday(args[1])
     # # birh = Birth(args[1])
     # print(type(name), type(birh))
-    return f"До контакта {name} додана дата народження {birth}"
+    return f"Немає {name} в списку кнтактів"
 
+def days_to_bd(*args):
+    name = Name(args[0].capitalize())
+    rec = address_book.get(str(name))
+    if rec:
+        return rec.days_for_birthday()
+    return f"Немає {name} в списку контактів"
+    
 
 COMMANDS = {
     add_command: ("add", "+", "додати"),
@@ -108,7 +119,8 @@ COMMANDS = {
     show_all_command: ("show all", "показати все"),
     hello_func: ("hello", "hi", "привіт"),
     phone_print: ("phone", "друк", "print"),
-    get_birth: ("birthday", "birth")
+    get_birth: ("birthday", "birth"),
+    days_to_bd: ("days", )
 }
 
 
