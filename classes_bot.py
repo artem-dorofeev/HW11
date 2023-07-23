@@ -1,6 +1,6 @@
 from collections import UserDict
 from datetime import datetime
-# from itertools import islice
+
 
 class Field:
     def __init__(self, value) -> None:
@@ -27,8 +27,6 @@ class Birthday(Field):
     def __init__(self, value) -> None:
         self.__value = None
         self.value = value
-        # self.time_birth = datetime.strptime(value, '%d.%m.%Y')
-        super().__init__(value)
 
     @property
     def value(self):
@@ -44,9 +42,6 @@ class Birthday(Field):
     def __str__(self):
         return self.__value.strftime("%d.%m.%Y")
 
-    # def ___str___(self):
-    #     return datetime.strptime(self.time, '%d.%m.%Y')
-
 
 class Record:
     def __init__(self, name: Name, phone: Phone = None, birthday: Birthday = None) -> None:
@@ -54,8 +49,7 @@ class Record:
         self.phones = []
         if phone:
             self.phones.append(phone)
-        if birthday:
-            self.birthday = birthday
+        self.birthday = birthday
 
     def add_phone(self, phone: Phone):
         if phone.value not in [p.value for p in self.phones]:
@@ -70,10 +64,14 @@ class Record:
                 return f"старий номер {old_phone} змінено на {new_phone}"
         return f"{old_phone} відсутній в списку контакта {self.name}"
     
-    def days_for_birthday(self, birthday):
+    def add_birthday(self, birthday: Birthday):
+        self.birthday = birthday
+        return f"{birthday} add to {self.name}"
+
+    def days_for_birthday(self):
         if not self.birthday:
-            return f"not date birthday for {self.name}"
-        birth = datetime.strptime(self.birthday, '%d.%m.%Y')
+            return f"відсутня дата народження {self.name}"
+        birth = self.birthday.value
         current_date = datetime.now()
         next_birth = datetime(current_date.year, birth.month, birth.day)
         if next_birth < current_date:
