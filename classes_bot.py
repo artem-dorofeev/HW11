@@ -13,16 +13,34 @@ class Field:
         return str(self)
 
 
-class Name(Field):
+class NameError(Exception):
     ...
+
+
+class Name(Field):
+    def __init__(self, value) -> None:
+        self.__value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self.__value.capitalize()
+
+    @value.setter
+    def value(self, value):
+        if len(value) < 2:
+            raise NameError("Ім'я контакта має буди 2 або більше символів")
+        self.__value = value
 
 
 class Phone(Field):
     ...
 
+
 class BirthdayError(Exception):
     ...
-    
+
+
 class Birthday(Field):
     def __init__(self, value) -> None:
         self.__value = None
@@ -37,8 +55,8 @@ class Birthday(Field):
         try:
             self.__value = datetime.strptime(value, "%d.%m.%Y")
         except ValueError:
-            raise BirthdayError()
-    
+            raise BirthdayError("Дата повинна бути у форматі дд.мм.рррр")
+
     def __str__(self):
         return self.__value.strftime("%d.%m.%Y")
 
@@ -63,7 +81,7 @@ class Record:
                 self.phones[idx] = new_phone
                 return f"старий номер {old_phone} змінено на {new_phone}"
         return f"{old_phone} відсутній в списку контакта {self.name}"
-    
+
     def add_birthday(self, birthday: Birthday):
         self.birthday = birthday
         return f"{birthday} add to {self.name}"
@@ -75,7 +93,8 @@ class Record:
         current_date = datetime.now()
         next_birth = datetime(current_date.year, birth.month, birth.day)
         if next_birth < current_date:
-            next_birth = datetime(current_date.year + 1, birth.month, birth.day)
+            next_birth = datetime(current_date.year + 1,
+                                  birth.month, birth.day)
         day_for_birth = next_birth - current_date
         return day_for_birth.days
 
@@ -87,13 +106,13 @@ class AddressBook(UserDict):
     def add_record(self, record: Record):
         self.data[str(record.name)] = record
         return f"Контакт {record} додано успішно"
-    
+
     def iterator(self, n=3):
         result = ''
         count = 0
         for cont in self.values():
             result += str(cont) + "\n"
-            count +=1
+            count += 1
             if count >= n:
                 yield result
                 count = 0

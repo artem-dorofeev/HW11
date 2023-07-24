@@ -1,4 +1,4 @@
-﻿from classes_bot import AddressBook, Name, Phone, Record, Birthday
+﻿from classes_bot import AddressBook, Name, Phone, Record, Birthday, BirthdayError, NameError
 from sanitize import sanitize_phone_number
 from datetime import datetime
 
@@ -37,7 +37,10 @@ def key_error(func):
 
 @input_error
 def add_command(*args):
-    name = Name(args[0].capitalize())
+    try:
+        name = Name(args[0])
+    except NameError as e:
+        return e
     if len(args[1]) > 13 or len(args[1]) < 10:
         return f"Невірний формат номер телефона"
     phone = Phone(sanitize_phone_number(args[1]))
@@ -54,7 +57,6 @@ def phone_print(*data):
     result = address_book[contact]
     days_for_bd = days_to_bd(*data)
     return f"Контакт: {result} до дня народження {days_for_bd}"
-
 
 
 @index_error
@@ -91,12 +93,15 @@ def show_all_command(*args):
 
 def get_birth(*args):
     name = Name(args[0].capitalize())
-    # print(args[0], args[1])
     rec = address_book.get(str(name))
     if rec:
-        birth = Birthday(args[1]) 
+        try:
+            birth = Birthday(args[1])
+        except BirthdayError as e:
+            return e
         return rec.add_birthday(birth)
     return f"Немає {name} в списку кнтактів"
+
 
 def days_to_bd(*args):
     name = Name(args[0].capitalize())
