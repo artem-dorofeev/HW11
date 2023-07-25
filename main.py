@@ -1,5 +1,5 @@
 ﻿from classes_bot import AddressBook, Name, Phone, Record, Birthday, BirthdayError, NameError
-from sanitize import sanitize_phone_number
+# from sanitize import sanitize_phone_number
 from datetime import datetime
 
 address_book = AddressBook()
@@ -43,7 +43,8 @@ def add_command(*args):
         return e
     if len(args[1]) > 13 or len(args[1]) < 10:
         return f"Невірний формат номер телефона"
-    phone = Phone(sanitize_phone_number(args[1]))
+    # phone = Phone(sanitize_phone_number(args[1]))
+    phone = Phone(args[1])
     rec: Record = address_book.get(str(name))
     if rec:
         return rec.add_phone(phone)
@@ -62,10 +63,12 @@ def phone_print(*data):
 @index_error
 def change_command(*args):
     name = Name(args[0].capitalize())
-    old_phone = Phone(sanitize_phone_number(args[1]))
+    old_phone = Phone(args[1])
+    # old_phone = Phone(sanitize_phone_number(args[1]))
     if len(args[2]) > 13 or len(args[2]) < 10:
         return f"Невірний формат номер телефона"
-    new_phone = Phone(sanitize_phone_number(args[2]))
+    new_phone = Phone(args[2])
+    # new_phone = Phone(sanitize_phone_number(args[2]))
     rec: Record = address_book.get(str(name))
     if rec:
         return rec.change_phone(old_phone, new_phone)

@@ -33,8 +33,37 @@ class Name(Field):
         self.__value = value
 
 
-class Phone(Field):
+class PhoneError(Exception):
     ...
+
+class Phone(Field):
+    def __init__(self, value) -> None:
+        self.__value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self.__value.capitalize()
+
+    @value.setter
+    def value(self, value):
+        new_phone = (
+        value.strip()
+        .removeprefix("+")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("-", "")
+        .replace(" ", "")
+    )
+        if len(new_phone) == 12:
+            new_phone = '+' + new_phone
+        elif len(new_phone) == 11:
+            new_phone = '+3' + new_phone
+        elif len(new_phone) == 10:
+            new_phone = '+38' + new_phone
+        else:
+            raise PhoneError("Не відомий формат номера")
+        self.__value = new_phone
 
 
 class BirthdayError(Exception):
